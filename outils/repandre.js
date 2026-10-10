@@ -32,7 +32,13 @@ const versionDe = (contenu) => (
 
 const modules = fs.readdirSync(DOSSIER_MODULES)
   .filter((n) => n.endsWith('.gs') || n.endsWith('.html'))
-  .map((nom) => ({ nom, source: fs.readFileSync(path.join(DOSSIER_MODULES, nom), 'utf8') }));
+  .map((nom) => ({ nom, source: fs.readFileSync(path.join(DOSSIER_MODULES, nom), 'utf8') }))
+  // Le cœur du simulateur se recopie dans banc/ comme un module dans le code :
+  // même règle, une copie en retard se remplace, une copie retouchée non.
+  .concat([{
+    nom: 'faux-google-socle.js',
+    source: fs.readFileSync(path.join(RACINE, 'banc', 'faux-google-socle.js'), 'utf8'),
+  }]);
 
 const normaliser = (texte) => texte.replace(/\r\n/g, '\n').trimEnd();
 

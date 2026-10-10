@@ -3,6 +3,49 @@
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 Ce projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [0.13.0] - 2026-10-10
+
+### Ajouté
+
+- **`outils/verifier.js`** — les contrôles qu'on oubliait avant `clasp push`,
+  rassemblés et appelés par le hook Git, le hook Claude Code et la CI. Il lit
+  les fichiers **dans l'ordre où clasp les pousse** (alphabétique, relevé dans
+  les sources de clasp 3) et cherche ce qui ne casse qu'en production :
+  syntaxe du projet entier, `function` déclarée deux fois, constante lue avant
+  sa déclaration, cible de menu ou de `google.script.run` introuvable, service
+  avancé employé sans être activé, énumération inventée. Sa première mesure, sur
+  dix-neuf projets, a trouvé trois défauts de production qu'aucun banc n'avait
+  vus.
+- **Contrôle de types** par TypeScript et `@types/google-apps-script`, avec un
+  cliquet (`--accepter`, `verifier.json`) pour que seuls les signalements
+  nouveaux échouent. Les types en retard sur Google se corrigent dans
+  `CORRECTIFS_TYPES`, page citée — le premier : `DriveApp.Permission.FILE_ORGANIZER`.
+- **`outils/publier.js`** — version, journal daté, tag, `clasp push`, version
+  Apps Script et déploiement, en deux temps : le plan, puis `--appliquer`. Il
+  refuse d'inventer le journal.
+- **`outils/nouveau-projet.js` et `gabarit/`** — un projet aux conventions,
+  attribué selon le **profil** (`~/.config/atelier-apps-script/profil.json`),
+  pour que le même socle serve chez soi et chez un employeur.
+- **`outils/tableau.js`** — une ligne par projet : Git, publication,
+  vérification, hook, CI, copies du socle.
+- **`outils/equiper.js`** — le hook Git `pre-commit`, qui n'écrase jamais un
+  hook qu'il n'a pas posé.
+- **`banc/faux-google-socle.js`** — le cœur commun des services simulés, avec
+  `chargerProjet` qui charge dans l'ordre de clasp. Suivi par `etat.js` et
+  `repandre.js` comme un module.
+- **`banc/outils.test.js`** — chaque défaut que les outils prétendent attraper
+  y est réintroduit ; éprouvé en désactivant deux protections, qu'il a vues.
+- **CI** : `.github/workflows/verifier.yml`, réutilisable par les projets, et
+  `ci.yml` pour le socle. Aucun déploiement depuis la CI.
+- `package.json` (TypeScript 5.9.3, `@types/google-apps-script` 2.0.13,
+  épinglés) et `.node-version` (24).
+
+### Modifié
+
+- Le socle est désormais sous Git ; `v0.12.2` marque l'état d'avant.
+- Tous les modules passent en 0.13.0 sans changer de comportement : un seul
+  numéro de version pour tout le socle.
+
 ## [0.12.2] - 2026-09-25
 
 ### Corrigé

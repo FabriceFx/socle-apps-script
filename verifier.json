@@ -1,0 +1,9 @@
+{
+  "typesAcceptes": {
+    "modules/SocleErreurs.gs|TS2339|Property 'quoi' does not exist on type 'Error'.": 1,
+    "modules/SocleErreurs.gs|TS2339|Property 'quoiFaire' does not exist on type 'Error'.": 1
+  },
+  "exceptions": {
+    "outils/SocleControle.gs|TS2339|Property 'DENY' does not exist on type 'typeof XFrameOptionsMode'.": "Voulu : le contrôle vérifie que DENY n'existe pas, pour attraper une documentation qui le prétendrait."
+  }
+}

@@ -34,6 +34,18 @@ const modules = fs.readdirSync(DOSSIER_MODULES)
       version: (/_VERSION_ = '([^']+)'|--socle-version: '([^']+)'|version: '([^']+)'/.exec(source) || []).slice(1).find(Boolean),
     };
   });
+// Le cœur du simulateur des bancs (v0.13) se suit comme un module : une copie
+// dans banc/ qui a dérivé se voit ici, au même titre qu'un SocleDates.gs.
+{
+  const source = fs.readFileSync(path.join(RACINE, 'banc', 'faux-google-socle.js'), 'utf8');
+  modules.push({
+    nom: 'faux-google-socle.js',
+    objet: 'faux-google-socle',
+    source,
+    empreinte: empreinte(source),
+    version: (/_VERSION_ = '([^']+)'/.exec(source) || [])[1],
+  });
+}
 
 /**
  * Ce que le socle remplace, et comment le reconnaître dans un projet.
@@ -68,7 +80,8 @@ const fichiersGs = (dossier) => {
       if (entree.name === 'node_modules' || entree.name.startsWith('.')) return;
       const complet = path.join(courant, entree.name);
       if (entree.isDirectory()) parcourir(complet);
-      else if (entree.name.endsWith('.gs') || entree.name.endsWith('.html')) sortie.push(complet);
+      else if (entree.name.endsWith('.gs') || entree.name.endsWith('.html')
+        || entree.name === 'faux-google-socle.js') sortie.push(complet);
     });
   };
   parcourir(dossier);
@@ -90,7 +103,9 @@ let totalARecopier = 0;
 projets.forEach((dossier) => {
   const fichiers = fichiersGs(dossier);
   const parNom = new Map(fichiers.map((f) => [path.basename(f), f]));
-  const source = fichiers.map((f) => fs.readFileSync(f, 'utf8')).join('\n');
+  // Le simulateur n'est pas du code de projet : ses « throw new Error » ne sont
+  // pas des messages à reprendre.
+  const source = fichiers.filter((f) => !f.endsWith('.js')).map((f) => fs.readFileSync(f, 'utf8')).join('\n');
 
   console.log(`\x1b[1m${path.basename(dossier)}\x1b[0m  (${fichiers.length} fichiers .gs)`);
 

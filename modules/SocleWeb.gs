@@ -19,7 +19,7 @@
  * à son champ `quoiFaire`, sans exiger que ce module soit présent.
  */
 
-const SOCLE_WEB_VERSION_ = '0.12.2';
+const SOCLE_WEB_VERSION_ = '0.13.0';
 
 const socleWebTexte_ = (valeur) => String(valeur ?? '').trim();
 

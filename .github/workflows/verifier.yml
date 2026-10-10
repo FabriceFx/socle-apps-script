@@ -1,0 +1,58 @@
+# Workflow réutilisable : le même verifier.js que le hook Git et le hook
+# Claude Code, appelé par la CI de chaque projet.
+#
+#     jobs:
+#       verifier:
+#         uses: <propriétaire>/socle-apps-script/.github/workflows/verifier.yml@v0.13.0
+#         with:
+#           socle: <propriétaire>/socle-apps-script
+#           ref: v0.13.0
+#
+# Le dépôt et la version du socle sont passés explicitement : un workflow
+# appelé ne sait pas, de lui-même, de quel dépôt ni de quel tag il vient. Les
+# écrire dans l'appel garde aussi la CI reproductible — un projet vérifié en
+# v0.13.0 le reste tant qu'on ne change pas la ligne.
+#
+# Contrainte GitHub : un dépôt public ne peut pas appeler le workflow d'un
+# dépôt privé. Le socle doit donc être au moins aussi visible que les projets.
+#
+# Rien n'est déployé chez Google d'ici : il faudrait confier à GitHub le jeton
+# clasp, porteur de toutes les portées du compte.
+name: verifier
+
+on:
+  workflow_call:
+    inputs:
+      socle:
+        description: Dépôt du socle (propriétaire/nom)
+        type: string
+        required: true
+      ref:
+        description: Tag ou branche du socle
+        type: string
+        required: true
+
+jobs:
+  verifier:
+    name: verifier.js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ inputs.socle }}
+          ref: ${{ inputs.ref }}
+          path: .socle
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .socle/.node-version
+          cache: npm
+          cache-dependency-path: .socle/package-lock.json
+
+      - name: Dépendances du socle (TypeScript et types Apps Script)
+        run: npm ci --prefix .socle --no-audit --no-fund
+
+      - name: Vérification
+        run: node .socle/outils/verifier.js .

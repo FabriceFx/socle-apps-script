@@ -11,3 +11,4 @@ galerie-rendue.html
 
 # Dossier d’essai, engendré par outils/preparer-essai.js
 essai/
+node_modules/

@@ -1,0 +1,9 @@
+# Clasp & configuration locale
+.clasp.json
+.clasprc.json
+node_modules/
+.DS_Store
+
+# Fichiers IA
+CLAUDE.md
+.claude/

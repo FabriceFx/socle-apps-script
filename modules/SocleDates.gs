@@ -17,7 +17,7 @@
  * Ce fichier se recopie tel quel. Il ne dépend d'aucun autre module du socle.
  */
 
-const SOCLE_DATES_VERSION_ = '0.12.2';
+const SOCLE_DATES_VERSION_ = '0.13.0';
 
 /**
  * Noms de mois explicites, et non `Utilities.formatDate(…, 'MMMM')`.

@@ -1,0 +1,18 @@
+{
+  "name": "socle-apps-script",
+  "private": true,
+  "description": "Modules Apps Script à recopier, et les outils qui tiennent les projets : vérification, publication, gabarit.",
+  "license": "Elastic-2.0",
+  "author": "Fabrice Faucheux (https://faucheux.bzh)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node banc/test.js && node banc/outils.test.js",
+    "verifier": "node outils/verifier.js"
+  },
+  "devDependencies": {
+    "@types/google-apps-script": "2.0.13",
+    "typescript": "5.9.3"
+  }
+}

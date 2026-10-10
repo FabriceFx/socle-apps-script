@@ -532,7 +532,7 @@ noms et dit lequel employer.
 node banc/test.js
 ```
 
-270 assertions, hors de Google. Les faux services refusent ce que les vrais
+308 assertions, hors de Google. Les faux services refusent ce que les vrais
 refusent — et le faux `Utilities.formatDate` rend des noms de mois **en
 anglais**, de sorte qu'un module qui s'en servirait pour afficher « septembre »
 se fait prendre immédiatement.
@@ -543,6 +543,84 @@ projets réels — échappement à trois remplacements, date devinée par
 backoff sans tri — et cinq sur les courriels : remède rendu facultatif,
 échéance rendue facultative, compteur d'occurrences retiré, quota lu après
 l'envoi, marqueur d'objet supprimé. Chacun le fait échouer.
+
+Les outils ont leur propre banc, `node banc/outils.test.js` : chaque défaut
+que `verifier.js` prétend attraper y est réintroduit dans un projet d'essai.
+`npm test` lance les deux.
+
+## Tenir les projets : vérifier, publier, créer
+
+Introduits en v0.13. Ils supposent `npm ci` dans le socle (TypeScript et les
+types Apps Script, épinglés), et lisent un **profil** hors dépôt :
+`~/.config/atelier-apps-script/profil.json` — qui l'on est, sous quelle
+licence on publie, où sont les projets. Chez soi et chez un employeur, le code
+des outils est le même ; seul le profil change.
+
+```bash
+node outils/verifier.js [projet]            # avant de pousser : tout, banc compris
+node outils/publier.js [projet] minor       # le plan ; --appliquer pour l'exécuter
+node outils/nouveau-projet.js nom --titre "Titre"
+node outils/tableau.js                      # une ligne par projet
+node outils/equiper.js toutes               # le hook Git pre-commit
+```
+
+### `verifier.js` cherche ce qui ne casse qu'en production
+
+| Contrôle | Ce qu'il attrape |
+|---|---|
+| syntaxe, fichier par fichier puis ensemble | un projet qui ne se charge pas — toutes ses fonctions « introuvables » |
+| portée globale | deux `function` de même nom : `node --check` l'accepte, la dernière poussée gagne |
+| types (TypeScript + `@types/google-apps-script`) | une constante lue avant sa déclaration **dans l'ordre de clasp**, un nom inconnu, une énumération inventée |
+| cibles par nom | un menu, un déclencheur ou un `google.script.run` qui vise une `const` ou une fonction en `_` |
+| services avancés | `Drive.Files.list` sans Drive activé dans le manifeste |
+| version, journal, manifeste | `VERSION` ≠ constante, V8 absent, fuseau ≠ profil, portée la plus large |
+| motifs, secrets | `String(v).slice(0, 10)`, clé dans `?key=`, clé `AIza…` en clair |
+| banc | `banc/test.js` ou `tests/run.js` |
+
+| Choix | Pourquoi |
+|---|---|
+| Les fichiers sont lus **dans l'ordre où clasp les pousse** (alphabétique, sauf `filePushOrder`). | Relevé dans les sources de clasp 3. Un banc qui charge dans un ordre choisi à la main a validé un projet qui levait au chargement. |
+| Les signalements de types passent par un **cliquet** : `--accepter` fige l'existant dans `verifier.json`, seul le nouveau échoue. | Le JavaScript non annoté produit des faux positifs ; les tolérer tous ferait taire les vrais. |
+| Trois familles échappent au cliquet : nom inconnu, lecture avant déclaration, membre d'énumération inexistant. | Ils lèvent à coup sûr. Une exception exige une **raison écrite** dans `verifier.json`. |
+| Les types en retard sur Google se corrigent dans `CORRECTIFS_TYPES`, **page citée**. | `DriveApp.Permission.FILE_ORGANIZER` existe ; les types l'ignoraient. Un correctif sans source serait une croyance de plus. |
+| Un contrôle impossible est dit « non mesuré », jamais « passé ». | Sans TypeScript installé, le rapport le dit au lieu de verdir. |
+
+Sa première mesure, sur dix-neuf projets, a trouvé trois défauts de
+production qu'aucun banc n'avait vus : un projet qui ne se chargeait plus, une
+variable lue hors du bloc où elle était déclarée, une constante lue avant sa
+déclaration selon l'ordre de clasp.
+
+### `publier.js` : un déploiement sert une copie figée
+
+`clasp push` ne change rien à ce que sert `/exec`. Publier enchaîne donc :
+`VERSION` et la constante, la date du journal, commit et tag, `clasp push`,
+une version Apps Script décrite par le numéro semver, et le déploiement qui
+avance dessus. Il **n'invente pas le journal** : sans « ## [Non publié] » ni
+entrée pour la version, il s'arrête. Il ne fait pas de `git push`.
+
+### `nouveau-projet.js` et `gabarit/`
+
+Le gabarit pose ce que chaque projet finit par réécrire : README et
+DEMARRAGE, CHANGELOG, VERSION, la **licence recopiée** depuis le profil, un
+menu « À propos » qui affiche la version, un banc qui charge les fichiers dans
+l'ordre de clasp, la CI. `--clasp` et `--github` (dépôt **privé**) ne sortent
+de la machine que si on les demande.
+
+### `banc/faux-google-socle.js`
+
+Le cœur commun des services simulés, recopié dans `banc/` des projets et suivi
+par `etat.js` et `repandre.js` comme un module. Il réunit la version la plus
+sévère de ce que cinq simulateurs de projets avaient écrit chacun de leur
+côté. Les simulateurs existants des projets restent en place : un projet
+adopte le cœur quand on y travaille, pas d'office.
+
+### La CI
+
+`.github/workflows/verifier.yml` est un workflow réutilisable : la CI d'un
+projet tient en six lignes et appelle le même `verifier.js`. Un dépôt public
+ne pouvant appeler le workflow d'un dépôt privé, le socle doit être au moins
+aussi visible que les projets. **Rien n'est déployé depuis la CI** : il
+faudrait y confier le jeton clasp, porteur de toutes les portées du compte.
 
 ## Deux portes d'entrée, pas une
 
@@ -643,9 +721,19 @@ loading each module in a sandbox where it alone exists.
 ## Tools
 
 ```bash
-node banc/test.js      # 78 assertions, outside Google
-node outils/etat.js    # which modules each project embeds, and what still awaits migration
+node banc/test.js            # outside Google
+node banc/outils.test.js     # every defect verifier.js claims to catch, reintroduced
+node outils/etat.js          # which modules each project embeds, and what still awaits migration
+node outils/verifier.js      # before pushing: load order as clasp pushes, types, menu targets, advanced services
+node outils/publier.js minor # version, changelog date, tag, clasp version and deployment — plan first, --appliquer to run
+node outils/nouveau-projet.js name --titre "Title"   # from gabarit/, identity read from the profile
+node outils/tableau.js       # one line per project
 ```
+
+Tools read a profile outside any repository
+(`~/.config/atelier-apps-script/profil.json`): author, licence file, GitHub
+owner, projects folder. The same tools serve personal and employer projects;
+only the profile changes.
 
 ## Licence
 

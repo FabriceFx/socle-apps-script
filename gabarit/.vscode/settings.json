@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.gs": "javascript"
+  },
+  "files.exclude": {
+    "**/.DS_Store": true
+  }
+}
