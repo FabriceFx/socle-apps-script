@@ -1,0 +1,13 @@
+# Clasp & configuration locale
+.clasp.json
+.clasprc.json
+
+.DS_Store
+
+# Fichiers IA
+CLAUDE.md
+claude.md
+galerie-rendue.html
+
+# Dossier d’essai, engendré par outils/preparer-essai.js
+essai/

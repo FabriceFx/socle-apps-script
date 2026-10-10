@@ -1,0 +1,88 @@
+<!--
+  Socle — moitié navigateur des applications web. Introduite en v0.4.
+
+  À inclure dans la page, après SocleStyle :
+
+      <?!= SocleWeb.inclure('SocleWebClient') ?>
+
+  Trois fonctions, sous l'objet `socle`. Elles portent un préfixe d'objet pour
+  la même raison que les classes CSS portent « s- » : ce fichier atterrit dans
+  des pages qui ont déjà leur JavaScript.
+-->
+<script>
+(function () {
+  'use strict';
+
+  var socle = {
+    version: '0.12.2',
+
+    /**
+     * Échappe un texte destiné à du HTML.
+     *
+     * Cinq remplacements, comme SocleTexte côté serveur — et le banc vérifie
+     * que les deux rendent exactement la même chose. Les versions écrites à la
+     * main dans les projets en couvraient quatre, parfois trois : la
+     * différence ne se voit que le jour où quelqu'un s'en sert.
+     */
+    echapper: function (valeur) {
+      return String(valeur === null || valeur === undefined ? '' : valeur)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    },
+
+    /**
+     * Appelle une fonction du serveur et rend une promesse.
+     *
+     *     socle.appeler('getTargets').then(afficher);
+     *
+     * C'est l'enveloppe que chaque application réécrit — dans un projet
+     * mesuré, elle était copiée deux fois à l'identique dans deux fichiers du
+     * même dépôt.
+     *
+     * Le rejet porte une `Error` dont le message est lisible : ce qui traverse
+     * google.script.run n'est pas garanti de porter autre chose.
+     */
+    appeler: function (nom, args) {
+      return new Promise(function (resoudre, rejeter) {
+        if (typeof google === 'undefined' || !google.script || !google.script.run) {
+          rejeter(new Error(
+            'Cette page n\'est pas servie par Apps Script : rechargez-la depuis '
+            + 'son URL de déploiement.'));
+          return;
+        }
+        google.script.run
+          .withSuccessHandler(resoudre)
+          .withFailureHandler(function (erreur) {
+            rejeter(erreur instanceof Error ? erreur : new Error(String(erreur)));
+          })[nom].apply(null, args || []);
+      });
+    },
+
+    /**
+     * Appelle une fonction enveloppée par SocleWeb.frontiere et rend sa valeur,
+     * ou rejette avec le message destiné à l'utilisateur.
+     *
+     * C'est le pendant navigateur de la frontière : le client n'a jamais à
+     * décider si ce qu'il a reçu est lisible par un humain.
+     */
+    demander: function (nom, args) {
+      return socle.appeler(nom, args).then(function (reponse) {
+        if (reponse && reponse.ok === true) return reponse.valeur;
+        if (reponse && reponse.ok === false) {
+          var echec = new Error(reponse.message);
+          echec.reference = reponse.reference;
+          throw echec;
+        }
+        throw new Error(
+          'Réponse inattendue du serveur : la fonction « ' + nom + ' » n\'est pas '
+          + 'enveloppée par SocleWeb.frontiere.');
+      });
+    },
+  };
+
+  window.socle = socle;
+}());
+</script>

@@ -1,0 +1,200 @@
+<!--
+  Corps de la galerie — sans style : il est injecté depuis
+  modules/SocleStyle.html par outils/galerie.js.
+
+  Rien n'est recopié d'un fichier à l'autre, à dessein : une galerie qui
+  porterait sa propre copie du CSS montrerait, au bout de quelques semaines,
+  autre chose que ce que les projets utilisent réellement.
+-->
+<div class="s-page">
+  <h1 class="s-titre">Socle — galerie des composants</h1>
+  <p class="s-doux">Tout ce que la feuille de style propose, dans les deux thèmes.
+    Basculez le thème de votre système pour voir l'autre.</p>
+
+  <div class="s-pile" style="margin-top: var(--s-pas-5)">
+
+    <section>
+      <h2 class="s-sous-titre">Les cinq états</h2>
+      <p class="s-legende">Le vocabulaire vient de <code>Classify.gs</code>. La couleur ne
+        porte jamais seule l'information : une pastille et un libellé la doublent.</p>
+      <div class="s-rangee" style="margin-top: var(--s-pas-3)">
+        <span class="s-etat s-etat--critique">Public sur le web</span>
+        <span class="s-etat s-etat--serieux">Hors organisation</span>
+        <span class="s-etat s-etat--avertissement">Toute l'organisation</span>
+        <span class="s-etat s-etat--bon">Partage interne</span>
+        <span class="s-etat s-etat--neutre">Non partagé</span>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="s-sous-titre">Boutons</h2>
+      <div class="s-rangee">
+        <button class="s-bouton s-bouton--primaire">Préparer le plan</button>
+        <button class="s-bouton">Relire</button>
+        <button class="s-bouton s-bouton--discret">Annuler</button>
+        <button class="s-bouton s-bouton--danger">Appliquer les 38 révocations</button>
+        <button class="s-bouton" disabled>Indisponible</button>
+      </div>
+      <p class="s-legende" style="margin-top: var(--s-pas-2)">Une action irréversible ne se
+        présente pas comme les autres, et annonce son nombre exact.</p>
+    </section>
+
+    <section>
+      <h2 class="s-sous-titre">Chiffres clés</h2>
+      <div class="s-grille">
+        <div class="s-chiffre">
+          <span class="s-chiffre__valeur">1 284</span>
+          <span class="s-chiffre__libelle">Fichiers analysés</span>
+          <span class="s-chiffre__source">Mon Drive et 3 Drives partagés</span>
+        </div>
+        <div class="s-chiffre">
+          <span class="s-chiffre__valeur">38</span>
+          <span class="s-chiffre__libelle">Partages hors organisation</span>
+          <span class="s-chiffre__source">hors 12 domaines partenaires</span>
+        </div>
+        <div class="s-chiffre">
+          <span class="s-chiffre__valeur">4</span>
+          <span class="s-chiffre__libelle">Liens publics</span>
+          <span class="s-chiffre__source">dont 1 indexable</span>
+        </div>
+        <div class="s-chiffre">
+          <span class="s-chiffre__valeur s-non-mesure">—</span>
+          <span class="s-chiffre__libelle">Volume extrait</span>
+          <span class="s-chiffre__source">non mesuré : le journal ne le porte pas</span>
+        </div>
+      </div>
+      <p class="s-legende" style="margin-top: var(--s-pas-2)">Un chiffre s'accompagne toujours
+        de ce qui le produit. Le quatrième dit « non mesuré », et non « 0 ».</p>
+    </section>
+
+    <section>
+      <h2 class="s-sous-titre">Tableau</h2>
+      <div class="s-tableau-defilant">
+        <table class="s-tableau">
+          <thead>
+            <tr><th>Fichier</th><th>Exposition</th><th>Destinataire</th>
+              <th class="s-nombre">Score</th><th>Dernière modification</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Budget 2027.xlsx</td>
+              <td><span class="s-etat s-etat--critique">Lien public</span></td>
+              <td>Tout internaute</td><td class="s-nombre">88</td><td>2026-09-06</td></tr>
+            <tr><td>Contrats fournisseurs</td>
+              <td><span class="s-etat s-etat--serieux">Externe</span></td>
+              <td>contact@client.test</td><td class="s-nombre">61</td><td>2026-08-28</td></tr>
+            <tr><td>Notes de réunion</td>
+              <td><span class="s-etat s-etat--bon">Interne</span></td>
+              <td>equipe@exemple.test</td><td class="s-nombre">18</td>
+              <td class="s-non-mesure">non mesuré</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="s-sous-titre">Bandeaux</h2>
+      <div class="s-pile">
+        <div class="s-bandeau s-bandeau--critique">
+          <div><strong>Le dossier des photos n'est plus lisible.</strong><br>
+            Repartagez-le avec ce compte, puis relancez la génération.</div>
+        </div>
+        <div class="s-bandeau s-bandeau--avertissement">
+          <div>Le champ « Manager » n'est renseigné que pour 62 % de l'effectif :
+            l'organigramme sera juste par endroits et plat ailleurs.</div>
+        </div>
+        <div class="s-bandeau s-bandeau--bon">
+          <div>38 révocations appliquées, aucune ligne abandonnée.</div>
+        </div>
+        <div class="s-bandeau">
+          <div>Une reprise est programmée dans une minute : elle repartira toute seule.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="s-sous-titre">Champs</h2>
+      <div class="s-grille">
+        <label class="s-champ">
+          <span class="s-champ__libelle">Domaines partenaires</span>
+          <input class="s-champ__saisie" value="client.test, agence.fr">
+          <span class="s-champ__aide">Séparés par des virgules. L'exclusion l'emporte
+            sur l'inclusion.</span>
+        </label>
+        <label class="s-champ">
+          <span class="s-champ__libelle">Dossier des photos</span>
+          <input class="s-champ__saisie" value="dossier-inexistant">
+          <span class="s-champ__aide s-champ__aide--erreur">Ce dossier n'est pas accessible
+            avec ce compte : collez le lien depuis Drive, puis réessayez.</span>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="s-sous-titre">Progression</h2>
+      <div class="s-carte">
+        <div class="s-rangee" style="justify-content: space-between">
+          <span>Analyse de « Direction commerciale »</span>
+          <span class="s-chiffres">612 / 1 284</span>
+        </div>
+        <div class="s-progression" style="margin-top: var(--s-pas-2)">
+          <div class="s-progression__part" style="width: 48%"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="s-sous-titre">Barre latérale et thème figé</h2>
+      <p class="s-legende">Une barre latérale Apps Script vit dans le cadre de Sheets, qui
+        ne suit pas <code>prefers-color-scheme</code>. Un panneau sombre dans un bandeau
+        clair ne se lit pas comme un thème, mais comme un défaut : <code>s-clair</code>
+        rétablit la palette claire pour tout son sous-arbre, quel que soit le système.
+        <code>s-page--etroite</code> resserre l’espacement et met les boutons sur toute
+        la largeur — trois cents pixels ne se gaspillent pas.</p>
+      <div class="s-clair s-carte" style="margin-top: var(--s-pas-3); max-width: 320px">
+        <div class="s-page s-page--etroite">
+          <h3 class="s-titre">Procédures</h3>
+          <label class="s-champ">
+            <span class="s-champ__libelle">Votre question</span>
+            <input class="s-champ__saisie" value="Comment poser des congés ?">
+          </label>
+          <div class="s-rangee" style="margin-top: var(--s-pas-3)">
+            <button class="s-bouton s-bouton--primaire">Demander</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="s-sans-impression">
+      <h2 class="s-sous-titre">Ce qui ne s'imprime pas</h2>
+      <p class="s-legende">Cette section entière porte <code>s-sans-impression</code> :
+        elle disparaît à l'impression et dans un PDF. Ces outils produisent des rapports
+        qui finissent imprimés — les boutons et les filtres n'ont rien à y faire.</p>
+    </section>
+
+    <section>
+      <h2 class="s-sous-titre">Carte et boîte modale</h2>
+      <div class="s-grille">
+        <div class="s-carte">
+          <h3 class="s-sous-titre">Carte simple</h3>
+          <p class="s-doux">Un bloc bordé, sans ombre : pour du contenu qui se lit.</p>
+        </div>
+        <div class="s-carte s-carte--elevee">
+          <h3 class="s-sous-titre">Carte élevée</h3>
+          <p class="s-doux">Une ombre pour ce qui flotte au-dessus du reste.</p>
+        </div>
+      </div>
+      <div class="s-voile" style="position: static; margin-top: var(--s-pas-4); border-radius: var(--s-rayon-m)">
+        <div class="s-modale">
+          <h3 class="s-sous-titre">Appliquer maintenant ?</h3>
+          <p>38 messages vont être envoyés, sans retour possible.</p>
+          <p class="s-legende">Quota d'envoi restant aujourd'hui : 1 462.</p>
+          <div class="s-modale__actions">
+            <button class="s-bouton s-bouton--discret">Annuler</button>
+            <button class="s-bouton s-bouton--danger">Envoyer les 38 messages</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

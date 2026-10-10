@@ -1,0 +1,454 @@
+<!--
+  Socle — style des interfaces. Introduit en v0.2.
+
+  Un seul fichier, sans JavaScript, à inclure dans une page servie par
+  HtmlService :
+
+      <?!= HtmlService.createHtmlOutputFromFile('SocleStyle').getContent(); ?>
+
+  (la page hôte doit alors être créée par `createTemplateFromFile(…).evaluate()`,
+  sinon les scriptlets ne sont pas évalués), ou bien recopié au moment de la
+  construction, comme le fait build_apps_script.py dans l'audit des partages.
+
+  Aucun fichier .gs ne l'accompagne, à dessein : un module de style n'a pas de
+  code, et lui donner un jumeau en .gs poserait la question — que rien dans la
+  documentation ne tranche — de savoir si un projet Apps Script accepte deux
+  fichiers de même nom et d'extensions différentes.
+
+  Toutes les classes sont préfixées « s- ». C'est la même raison que le préfixe
+  des noms globaux en JavaScript : ce fichier est recopié dans des projets qui
+  ont déjà leur CSS, et une classe .bouton ou .carte y entrerait en collision
+  sans prévenir. Le préfixe est laid une fois écrit, et il évite une soirée.
+
+  Les cinq états reprennent le vocabulaire de Classify.gs — critical, serious,
+  warning, good, neutral — parce que c'est le vocabulaire du métier de ces
+  outils, et que la mesure l'a trouvé 105 fois dans les trois interfaces. Un
+  système de design qui n'exprimerait pas ça serait générique.
+-->
+<style>
+/*
+  La palette claire s'applique à la racine **et** à tout élément portant
+  « s-clair ». Les propriétés personnalisées se résolvant par élément, poser
+  cette classe sur un conteneur y rétablit le thème clair pour tout son
+  sous-arbre, quel que soit le réglage du système.
+
+  C'est indispensable dans une barre latérale ou une boîte de dialogue Apps
+  Script : leur cadre appartient à Sheets, qui ne suit pas
+  `prefers-color-scheme`. Un panneau sombre dans un bandeau clair ne se lit
+  pas comme un thème, il se lit comme un défaut.
+*/
+:root, .s-clair {
+  /* Version, lisible depuis le navigateur :
+     getComputedStyle(document.documentElement).getPropertyValue('--socle-version') */
+  --socle-version: '0.12.2';
+
+  /* ---- couleur d'accent ---- */
+  --s-primaire: #1a73e8;
+  --s-primaire-fonce: #1557b0;
+  --s-primaire-teinte: #e8f0fe;
+  --s-sur-primaire: #ffffff;
+
+  /* Un lien non stylé retombe sur #0000EE / #551A8B, choisis pour aucun de nos
+     deux fonds : sur fond sombre, un lien visité devient un bordeaux illisible.
+     Constaté sur l'application web de l'assistant des procédures. */
+  --s-lien: #1558d6;
+  --s-lien-visite: #681da8;
+
+  /* ---- neutres ---- */
+  --s-fond: #f8f9fa;
+  --s-surface: #ffffff;
+  --s-surface-basse: #f1f3f4;
+  --s-bordure: #dadce0;
+  --s-bordure-forte: #bdc1c6;
+  --s-texte: #202124;
+  --s-texte-doux: #5f6368;
+  --s-texte-faible: #80868b;
+
+  /* ---- les cinq états, vocabulaire de Classify.gs ---- */
+  --s-critique: #c5221f;
+  --s-critique-fond: #fce8e6;
+  --s-serieux: #e8710a;
+  --s-serieux-fond: #feefe3;
+  --s-avertissement: #b06000;
+  --s-avertissement-fond: #fef7e0;
+  --s-bon: #188038;
+  --s-bon-fond: #e6f4ea;
+  --s-neutre: #5f6368;
+  --s-neutre-fond: #f1f3f4;
+
+  /* ---- élévation ---- */
+  --s-ombre-1: 0 1px 2px rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
+  --s-ombre-2: 0 1px 2px rgba(60, 64, 67, .3), 0 2px 6px 2px rgba(60, 64, 67, .15);
+  --s-ombre-3: 0 4px 8px 3px rgba(60, 64, 67, .15), 0 1px 3px rgba(60, 64, 67, .3);
+
+  /* ---- trame de 4 px ---- */
+  --s-pas-1: 4px;
+  --s-pas-2: 8px;
+  --s-pas-3: 12px;
+  --s-pas-4: 16px;
+  --s-pas-5: 24px;
+
+  /* ---- rayons ---- */
+  --s-rayon-s: 8px;
+  --s-rayon-m: 12px;
+  --s-rayon-l: 16px;
+  --s-rayon-plein: 999px;
+
+  /* ---- typographie : pile système, aucune police à télécharger ---- */
+  --s-police: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --s-police-chiffres: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --s-titre-l: 1.5rem;
+  --s-titre-m: 1.125rem;
+  --s-corps: 0.875rem;
+  --s-legende: 0.75rem;
+
+  --s-voile-fond: rgba(32, 33, 36, .6);
+
+  --s-transition: 150ms cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Le thème sombre ne redéfinit que des jetons déjà déclarés au-dessus :
+   une couleur qui n'existerait QUE dans ce bloc ne s'appliquerait jamais en
+   thème clair, et c'est ainsi qu'on obtient du texte illisible sur un fond. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --s-primaire: #8ab4f8;
+    --s-primaire-fonce: #aecbfa;
+    --s-primaire-teinte: #1f3350;
+    --s-sur-primaire: #202124;
+
+    --s-lien: #8ab4f8;
+    --s-lien-visite: #d7aefb;
+
+    --s-fond: #1b1c1e;
+    --s-surface: #26282b;
+    --s-surface-basse: #303134;
+    --s-bordure: #3c4043;
+    --s-bordure-forte: #5f6368;
+    --s-texte: #e8eaed;
+    --s-texte-doux: #9aa0a6;
+    --s-texte-faible: #80868b;
+
+    --s-critique: #f28b82;
+    --s-critique-fond: #3d2220;
+    --s-serieux: #fcad70;
+    --s-serieux-fond: #3d2c1a;
+    --s-avertissement: #fdd663;
+    --s-avertissement-fond: #3b3020;
+    --s-bon: #81c995;
+    --s-bon-fond: #1f3226;
+    --s-neutre: #9aa0a6;
+    --s-neutre-fond: #303134;
+
+    --s-ombre-1: 0 1px 2px rgba(0, 0, 0, .6), 0 1px 3px 1px rgba(0, 0, 0, .4);
+    --s-ombre-2: 0 1px 2px rgba(0, 0, 0, .6), 0 2px 6px 2px rgba(0, 0, 0, .4);
+    --s-ombre-3: 0 4px 8px 3px rgba(0, 0, 0, .4), 0 1px 3px rgba(0, 0, 0, .6);
+    --s-voile-fond: rgba(0, 0, 0, .7);
+  }
+}
+
+/* ------------------------------------------------------------ fondations */
+
+/* Le fond se peint sur le document, et pas seulement sur `.s-page` : une page
+   centrée en largeur limitée — `max-width` + `margin: 0 auto` — laissait sinon
+   deux bandes blanches de part et d'autre d'un panneau sombre. */
+html, body { background: var(--s-fond); }
+
+.s-page {
+  margin: 0;
+  padding: var(--s-pas-5);
+  background: var(--s-fond);
+  min-height: 100%;
+  color: var(--s-texte);
+  font-family: var(--s-police);
+  font-size: var(--s-corps);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.s-page * { box-sizing: border-box; }
+
+.s-titre { font-size: var(--s-titre-l); font-weight: 400; margin: 0 0 var(--s-pas-2); }
+.s-sous-titre { font-size: var(--s-titre-m); font-weight: 500; margin: 0 0 var(--s-pas-2); }
+.s-legende { font-size: var(--s-legende); color: var(--s-texte-doux); }
+.s-doux { color: var(--s-texte-doux); }
+
+.s-page a { color: var(--s-lien); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.s-page a:visited { color: var(--s-lien-visite); }
+.s-page a:hover { text-decoration-thickness: 2px; }
+.s-page a:focus-visible { outline: 2px solid var(--s-primaire); outline-offset: 2px; }
+
+/* Un chiffre qui s'aligne en colonne se lit ; un chiffre qui danse ne se
+   compare pas. */
+.s-chiffres { font-variant-numeric: tabular-nums; font-family: var(--s-police-chiffres); }
+
+/*
+  Barre latérale : environ 300 px de large, et un cadre déjà fourni par Sheets.
+  On y retire le fond de page — deux cadres imbriqués ne servent à rien — et on
+  resserre tout, parce que chaque pixel horizontal compte.
+*/
+.s-page--etroite {
+  padding: var(--s-pas-3);
+  background: transparent;
+  overflow-wrap: anywhere;
+}
+
+.s-page--etroite .s-titre { font-size: var(--s-titre-m); }
+.s-page--etroite .s-carte { padding: var(--s-pas-3); }
+.s-page--etroite .s-bouton { width: 100%; }
+.s-page--etroite .s-grille { grid-template-columns: 1fr; }
+
+/* ------------------------------------------------------------ les cinq états */
+
+.s-etat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-pas-1);
+  padding: 2px var(--s-pas-2);
+  border-radius: var(--s-rayon-plein);
+  font-size: var(--s-legende);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.s-etat--critique { color: var(--s-critique); background: var(--s-critique-fond); }
+.s-etat--serieux { color: var(--s-serieux); background: var(--s-serieux-fond); }
+.s-etat--avertissement { color: var(--s-avertissement); background: var(--s-avertissement-fond); }
+.s-etat--bon { color: var(--s-bon); background: var(--s-bon-fond); }
+.s-etat--neutre { color: var(--s-neutre); background: var(--s-neutre-fond); }
+
+/* La couleur ne porte jamais seule une information : un liseré à gauche et un
+   libellé la doublent, pour qui ne distingue pas le rouge du vert. */
+.s-etat::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+/* ------------------------------------------------------------ boutons */
+
+.s-bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-pas-2);
+  min-height: 36px;
+  padding: 0 var(--s-pas-4);
+  border: 1px solid var(--s-bordure);
+  border-radius: var(--s-rayon-plein);
+  background: var(--s-surface);
+  color: var(--s-primaire);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--s-transition), box-shadow var(--s-transition);
+}
+
+.s-bouton:hover { background: var(--s-primaire-teinte); }
+.s-bouton:focus-visible { outline: 2px solid var(--s-primaire); outline-offset: 2px; }
+.s-bouton[disabled] { opacity: .38; cursor: not-allowed; }
+
+.s-bouton--primaire {
+  background: var(--s-primaire);
+  border-color: transparent;
+  color: var(--s-sur-primaire);
+  box-shadow: var(--s-ombre-1);
+}
+.s-bouton--primaire:hover { background: var(--s-primaire-fonce); box-shadow: var(--s-ombre-2); }
+
+.s-bouton--discret { border-color: transparent; background: transparent; }
+.s-bouton--discret:hover { background: var(--s-surface-basse); }
+
+/* Une action irréversible ne se présente pas comme les autres. */
+.s-bouton--danger { color: var(--s-critique); border-color: var(--s-critique); }
+.s-bouton--danger:hover { background: var(--s-critique-fond); }
+
+/* ------------------------------------------------------------ cartes */
+
+.s-carte {
+  background: var(--s-surface);
+  border: 1px solid var(--s-bordure);
+  border-radius: var(--s-rayon-m);
+  padding: var(--s-pas-4);
+}
+
+.s-carte--elevee { border-color: transparent; box-shadow: var(--s-ombre-1); }
+
+/* ------------------------------------------------------------ chiffres clés */
+
+.s-chiffre {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-pas-1);
+  padding: var(--s-pas-4);
+  background: var(--s-surface);
+  border: 1px solid var(--s-bordure);
+  border-radius: var(--s-rayon-m);
+}
+
+.s-chiffre__valeur {
+  font-size: 2rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.s-chiffre__libelle { font-size: var(--s-legende); color: var(--s-texte-doux); }
+
+/* Un chiffre s'accompagne toujours de ce qui le produit : cette ligne est
+   prévue pour le dire, et non pour décorer. */
+.s-chiffre__source { font-size: var(--s-legende); color: var(--s-texte-faible); }
+
+/* ------------------------------------------------------------ tableaux */
+
+.s-tableau-defilant { overflow-x: auto; }
+
+.s-tableau {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--s-corps);
+  background: var(--s-surface);
+}
+
+.s-tableau th,
+.s-tableau td {
+  padding: var(--s-pas-3) var(--s-pas-4);
+  border-bottom: 1px solid var(--s-bordure);
+  text-align: left;
+  vertical-align: top;
+}
+
+.s-tableau th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--s-surface-basse);
+  font-weight: 500;
+  color: var(--s-texte-doux);
+  white-space: nowrap;
+}
+
+.s-tableau tbody tr:hover { background: var(--s-surface-basse); }
+.s-tableau td.s-nombre { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Une colonne vide veut dire « non mesuré », jamais « rien trouvé ».
+   Cette classe sert à l'écrire plutôt qu'à laisser la cellule blanche. */
+.s-non-mesure { color: var(--s-texte-faible); font-style: italic; }
+
+/* ------------------------------------------------------------ champs */
+
+.s-champ { display: flex; flex-direction: column; gap: var(--s-pas-1); }
+
+.s-champ__libelle { font-size: var(--s-legende); color: var(--s-texte-doux); font-weight: 500; }
+
+.s-champ__saisie {
+  min-height: 36px;
+  padding: var(--s-pas-2) var(--s-pas-3);
+  border: 1px solid var(--s-bordure-forte);
+  border-radius: var(--s-rayon-s);
+  background: var(--s-surface);
+  color: var(--s-texte);
+  font: inherit;
+}
+
+.s-champ__saisie:focus-visible {
+  outline: 2px solid var(--s-primaire);
+  outline-offset: -1px;
+  border-color: var(--s-primaire);
+}
+
+/* Un message d'erreur dit quoi faire ensuite, pas ce qui a échoué. */
+.s-champ__aide { font-size: var(--s-legende); color: var(--s-texte-doux); }
+.s-champ__aide--erreur { color: var(--s-critique); }
+
+/* ------------------------------------------------------------ bandeaux */
+
+.s-bandeau {
+  display: flex;
+  gap: var(--s-pas-3);
+  padding: var(--s-pas-3) var(--s-pas-4);
+  border-radius: var(--s-rayon-s);
+  border-left: 4px solid var(--s-neutre);
+  background: var(--s-neutre-fond);
+  color: var(--s-texte);
+}
+
+.s-bandeau--critique { border-left-color: var(--s-critique); background: var(--s-critique-fond); }
+.s-bandeau--avertissement { border-left-color: var(--s-avertissement); background: var(--s-avertissement-fond); }
+.s-bandeau--bon { border-left-color: var(--s-bon); background: var(--s-bon-fond); }
+
+/* ------------------------------------------------------------ progression */
+
+.s-progression {
+  height: 4px;
+  border-radius: var(--s-rayon-plein);
+  background: var(--s-surface-basse);
+  overflow: hidden;
+}
+
+.s-progression__part {
+  height: 100%;
+  background: var(--s-primaire);
+  border-radius: inherit;
+  transition: width var(--s-transition);
+}
+
+/* ------------------------------------------------------------ boîte modale */
+
+.s-voile {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-pas-4);
+  background: var(--s-voile-fond);
+}
+
+.s-modale {
+  width: min(560px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  padding: var(--s-pas-5);
+  background: var(--s-surface);
+  border-radius: var(--s-rayon-l);
+  box-shadow: var(--s-ombre-3);
+}
+
+.s-modale__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-pas-2);
+  margin-top: var(--s-pas-5);
+}
+
+/* ------------------------------------------------------------ disposition */
+
+.s-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--s-pas-4);
+}
+
+.s-rangee { display: flex; align-items: center; gap: var(--s-pas-2); flex-wrap: wrap; }
+.s-pile { display: flex; flex-direction: column; gap: var(--s-pas-4); }
+
+/* ------------------------------------------------------------ accessibilité */
+
+@media (prefers-reduced-motion: reduce) {
+  .s-page *, .s-page *::before, .s-page *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* Ces outils produisent des rapports : ils finissent imprimés ou en PDF. */
+@media print {
+  .s-page { padding: 0; background: #ffffff; }
+  .s-sans-impression { display: none !important; }
+  .s-carte, .s-chiffre { box-shadow: none; border-color: #cccccc; }
+  .s-tableau th { position: static; }
+  .s-tableau tbody tr { break-inside: avoid; }
+}
+</style>
