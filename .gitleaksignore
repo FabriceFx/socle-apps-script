@@ -1,4 +1,4 @@
-# Faux positif examiné : une fausse clé AIza…, fabriquée dans le banc pour
-# éprouver la détection des secrets de verifier.js. Annotée depuis par
-# « gitleaks:allow » ; cette empreinte couvre le commit antérieur.
+# Faux positif examiné : une fausse clé AIza…, écrite dans le banc pour
+# éprouver la détection des secrets de verifier.js. Elle est depuis assemblée
+# à l'exécution ; cette empreinte couvre le commit où elle figurait en clair.
 c73a85ed4243e53f5e013442c9b1e5df533d7d2c:banc/outils.test.js:gcp-api-key:206
