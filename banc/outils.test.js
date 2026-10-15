@@ -154,6 +154,26 @@ try {
     verifier(chaine.statut('services avancés') !== 'echec', 'une mention dans une chaîne n’est pas un appel');
   }
 
+  console.log('— E bis. Portée de sécurité et garanties écrites');
+  {
+    const securite = { oauthScopes: ['https://www.googleapis.com/auth/admin.directory.user.security'] };
+    const r = verification(projetEssai(PROPRE, { manifeste: securite }));
+    egal(r.statut('manifeste'), 'avertissement',
+      'admin.directory.user.security : révocations comprises, à justifier');
+
+    // La garantie qui compense une portée large : « aucun appel à … ». Écrite
+    // dans verifier.json, elle se vérifie à chaque poussée au lieu de vivre
+    // dans un README qu'on ne relit pas.
+    const interdits = { 'AdminDirectory\\.(Tokens|Asps|TwoStepVerification)\\b': 'la portée de sécurité ne sert qu’à signOut' };
+    const propre = projetEssai(PROPRE, { manifeste: securite });
+    fs.writeFileSync(path.join(propre, 'verifier.json'), JSON.stringify({ interdits }));
+    egal(verification(propre).statut('motifs'), 'ok', 'garantie tenue : aucun appel interdit');
+
+    const fautif = projetEssai({ ...PROPRE, 'Jetons.gs': "function revoquer(e, c) { AdminDirectory.Tokens.remove(e, c); }\n" }, { manifeste: securite });
+    fs.writeFileSync(path.join(fautif, 'verifier.json'), JSON.stringify({ interdits }));
+    egal(verification(fautif).statut('motifs'), 'echec', 'garantie rompue : échec, pas avertissement');
+  }
+
   console.log('— F. Types : énumérations et cliquet');
   {
     const r = verification(projetEssai({

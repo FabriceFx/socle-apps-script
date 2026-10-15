@@ -57,7 +57,11 @@ const noter = (controle, statut, resume, details = [], remede = '') => {
 //   - `typesAcceptes` : les signalements de types déjà examinés et jugés faux
 //     positifs. Écrit par `--accepter`, jamais à la main ;
 //   - `exceptions` : un motif autorisé **avec sa raison**. Une exception sans
-//     raison écrite ne se distingue pas d'un oubli.
+//     raison écrite ne se distingue pas d'un oubli ;
+//   - `interdits` : l'inverse — une expression régulière que le projet s'engage
+//     à ne jamais employer, avec sa raison. C'est la garantie qui compense une
+//     portée large (« aucun appel à … ») : écrite ici, elle se vérifie à chaque
+//     poussée au lieu de vivre dans un README qu'on ne relit pas.
 const CHEMIN_CONFIG = path.join(projet, 'verifier.json');
 const config = fs.existsSync(CHEMIN_CONFIG)
   ? JSON.parse(fs.readFileSync(CHEMIN_CONFIG, 'utf8'))
@@ -583,6 +587,8 @@ if (carte.length) {
   const LARGES = {
     'https://mail.google.com/': 'toute la messagerie, suppression définitive comprise',
     'https://www.googleapis.com/auth/drive': 'tout le Drive, en écriture',
+    'https://www.googleapis.com/auth/admin.directory.user.security':
+      'jetons OAuth, mots de passe d’application, validation en deux étapes et sessions de tous les comptes, révocation comprise — écrire la garantie dans verifier.json → interdits',
   };
   (manifeste.oauthScopes || []).forEach((portee) => {
     if (LARGES[portee] && !exceptions[portee]) {
@@ -622,10 +628,15 @@ const MOTIFS = [
     quoi: 'GmailApp demande la lecture de la messagerie ; MailApp suffit pour envoyer',
   },
 ];
+const INTERDITS_DU_PROJET = Object.entries(config.interdits || {}).map(([motif, raison]) => ({
+  re: new RegExp(motif, 'g'),
+  statut: 'echec',
+  quoi: `interdit par verifier.json (${raison})`,
+}));
 if (carte.length) {
   const trouves = [];
   let pire = 'ok';
-  MOTIFS.forEach(({ re, statut, quoi, cle }) => {
+  [...MOTIFS, ...INTERDITS_DU_PROJET].forEach(({ re, statut, quoi, cle }) => {
     if (cle && exceptions[cle]) return;
     const lieux = [];
     carte.forEach(({ fichier, texte }) => {

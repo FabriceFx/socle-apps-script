@@ -5,6 +5,18 @@ Ce projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Non publié]
 
+### Ajouté
+
+- **`interdits` dans `verifier.json`** : une expression régulière que le projet
+  s'engage à ne jamais employer, avec sa raison ; le contrôle des motifs échoue
+  si elle apparaît. C'est la garantie qui compense une portée large — « aucun
+  appel à … » —, vérifiée à chaque commit et à chaque poussée au lieu de vivre
+  dans un README.
+- `admin.directory.user.security` rejoint les portées larges : jetons OAuth,
+  mots de passe d'application, validation en deux étapes et sessions de tous
+  les comptes, révocation comprise. Avertissement tant qu'elle n'est pas
+  justifiée.
+
 ### Corrigé
 
 - **`AdminDirectory.Users.signOut` inconnu du contrôle de types.** La méthode
