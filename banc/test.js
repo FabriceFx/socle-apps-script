@@ -14,6 +14,13 @@
 //     toutes ses fonctions deviennent introuvables d'un coup, y compris celles
 //     qui n'ont rien à voir avec le socle.
 
+// Chez Google, l'heure locale d'un script est celle du fuseau de
+// appsscript.json, que le faux Session annonce : Europe/Paris. Node prend,
+// lui, celui de la machine — juste sur un Mac réglé sur Paris, faux sur la CI
+// en UTC, où une chaîne sans fuseau se lisait deux heures plus tard. Le banc
+// impose donc le fuseau du script, avant toute création de Date.
+process.env.TZ = 'Europe/Paris';
+
 const fs = require('fs');
 const vm = require('vm');
 const path = require('path');

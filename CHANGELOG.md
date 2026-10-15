@@ -3,6 +3,18 @@
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 Ce projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [Non publié]
+
+### Corrigé
+
+- **Le banc dépendait du fuseau de la machine.** Une chaîne sans fuseau se
+  lisait à l'heure locale de Node : juste sur un poste réglé sur Paris, deux
+  heures de décalage sur la CI en UTC. Le banc du socle impose désormais le
+  fuseau du script, et celui du **gabarit** le lit dans `appsscript.json`,
+  comme Google — les projets créés ensuite naissent corrigés.
+- La fausse clé d'API du banc des secrets est assemblée à l'exécution :
+  écrite d'un tenant, elle déclenchait l'analyse des secrets de GitHub.
+
 ## [0.13.0] - 2026-10-10
 
 ### Ajouté
