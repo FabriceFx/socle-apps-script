@@ -203,7 +203,7 @@ try {
     egal(verification(dossier).statut('version'), 'echec', 'VERSION et constante divergent : échec');
   }
   {
-    const r = verification(projetEssai({ ...PROPRE, 'Cle.gs': "const CLE_ = 'AIzaSyA1234567890abcdefghijklmnopqrstuv';\n" }));
+    const r = verification(projetEssai({ ...PROPRE, 'Cle.gs': "const CLE_ = 'AIzaSyA1234567890abcdefghijklmnopqrstuv';\n" })); // gitleaks:allow — fausse clé, fabriquée pour éprouver la détection des secrets
     egal(r.statut('secrets'), 'echec', 'une clé AIza… en clair : échec');
     const faux = verification(projetEssai({ ...PROPRE, 'Essai.gs': "const JETON_ESSAI_ = 'ya29.jeton-de-test';\n" }));
     egal(faux.statut('secrets'), 'ok', 'un faux jeton de test court n’est pas un secret');
