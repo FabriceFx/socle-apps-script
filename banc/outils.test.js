@@ -171,6 +171,17 @@ try {
     egal(r.statut('types'), 'ok', 'FILE_ORGANIZER existe (doc Google) : le correctif de types le connaît');
   }
   {
+    // Users.signOut existe dans l'API Directory (doc Google), mais pas dans
+    // @types/google-apps-script : sans correctif, chaque projet qui révoque les
+    // sessions d'un compte devait figer un faux « Property 'signOut' does not
+    // exist » — et le faux positif cachait alors une portée manquante.
+    const r = verification(projetEssai({
+      ...PROPRE,
+      'Depart.gs': "function deconnecter(email) { AdminDirectory.Users.signOut(email); }\n",
+    }, { manifeste: { dependencies: { enabledAdvancedServices: [{ userSymbol: 'AdminDirectory', serviceId: 'admin', version: 'directory_v1' }] } } }));
+    egal(r.statut('types'), 'ok', 'Users.signOut existe (doc Google) : le correctif de types le connaît');
+  }
+  {
     const dossier = projetEssai({ ...PROPRE, 'Erreur.gs': "function lever() { const e = new Error('x'); e.codeMetier = 1; throw e; }\n" });
     egal(verification(dossier).statut('types'), 'echec', 'un signalement ordinaire non examiné fait échouer');
     verification(dossier, '--accepter');

@@ -410,6 +410,9 @@ const estBruit = (code, message) => (code >= 1000 && code < 2000)   // JSDoc mal
 const CORRECTIFS_TYPES = [
   // https://developers.google.com/apps-script/reference/drive/permission — vérifié le 2026-10-10
   'declare namespace GoogleAppsScript.Drive { enum Permission { FILE_ORGANIZER = 100 } }',
+  // https://developers.google.com/workspace/admin/directory/reference/rest/v1/users/signOut — vérifié le 2026-10-15
+  // Exige la portée admin.directory.user.security, et elle seule.
+  'declare namespace GoogleAppsScript.AdminDirectory.Collection { interface UsersCollection { signOut(userKey: string): void; } }',
 ];
 
 // Les noms courts que les JSDoc des projets emploient. Sans ces alias, chaque

@@ -7,6 +7,11 @@ Ce projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Corrigé
 
+- **`AdminDirectory.Users.signOut` inconnu du contrôle de types.** La méthode
+  existe dans l'API Directory, pas dans `@types/google-apps-script` : chaque
+  projet qui révoque les sessions d'un compte devait figer un faux positif. Le
+  correctif cite la page de Google, vérifiée le 2026-10-15, et rappelle la seule
+  portée acceptée : `admin.directory.user.security`.
 - **Le banc dépendait du fuseau de la machine.** Une chaîne sans fuseau se
   lisait à l'heure locale de Node : juste sur un poste réglé sur Paris, deux
   heures de décalage sur la CI en UTC. Le banc du socle impose désormais le
