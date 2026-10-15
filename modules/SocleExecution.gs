@@ -20,7 +20,7 @@
  * Ce fichier se recopie tel quel. Il ne dépend d'aucun autre module du socle.
  */
 
-const SOCLE_EXECUTION_VERSION_ = '0.13.0';
+const SOCLE_EXECUTION_VERSION_ = '0.13.1';
 
 /** Budget par défaut, sous le plafond : de quoi écrire l'état et rendre la main. */
 const SOCLE_EXECUTION_BUDGET_MS_ = 4 * 60 * 1000;

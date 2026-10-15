@@ -20,7 +20,7 @@
  * « réussi ».
  */
 
-const SOCLE_CONTROLE_VERSION_ = '0.13.0';
+const SOCLE_CONTROLE_VERSION_ = '0.13.1';
 
 /** Préfixe des traces laissées par le contrôle, pour les reconnaître et les retirer. */
 const SOCLE_CONTROLE_PREFIXE_ = 'socleControleTemporaire';

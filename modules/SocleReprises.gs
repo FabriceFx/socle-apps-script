@@ -21,7 +21,7 @@
  * Ce fichier se recopie tel quel. Il ne dépend d'aucun autre module du socle.
  */
 
-const SOCLE_REPRISES_VERSION_ = '0.13.0';
+const SOCLE_REPRISES_VERSION_ = '0.13.1';
 
 const SOCLE_REPRISES_TENTATIVES_ = 3;
 const SOCLE_REPRISES_ATTENTE_MS_ = 800;

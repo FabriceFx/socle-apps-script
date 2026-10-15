@@ -3,7 +3,7 @@
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 Ce projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
-## [Non publié]
+## [0.13.1] - 2026-10-15
 
 ### Ajouté
 

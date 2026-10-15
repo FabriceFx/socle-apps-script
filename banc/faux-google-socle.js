@@ -38,7 +38,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const FAUX_GOOGLE_SOCLE_VERSION_ = '0.13.0';
+const FAUX_GOOGLE_SOCLE_VERSION_ = '0.13.1';
 
 const TAILLE_MAX_PROPRIETE = 9 * 1024;
 const TAILLE_MAX_CACHE = 100 * 1024;

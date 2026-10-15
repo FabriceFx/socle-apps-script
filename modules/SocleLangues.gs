@@ -28,7 +28,7 @@
  * Ce fichier se recopie tel quel. Il ne dépend d'aucun autre module du socle.
  */
 
-const SOCLE_LANGUES_VERSION_ = '0.13.0';
+const SOCLE_LANGUES_VERSION_ = '0.13.1';
 
 /** Tables de chaînes et compteurs, objet `const` muté en place. */
 const SOCLE_LANGUES_ETAT_ = { defaut: 'fr', chaines: {}, manquantes: {} };

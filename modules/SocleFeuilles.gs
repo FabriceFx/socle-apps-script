@@ -18,7 +18,7 @@
  * Ce fichier se recopie tel quel. Il ne dépend d'aucun autre module du socle.
  */
 
-const SOCLE_FEUILLES_VERSION_ = '0.13.0';
+const SOCLE_FEUILLES_VERSION_ = '0.13.1';
 
 /**
  * Noms que Google donne à la feuille d'un classeur neuf.

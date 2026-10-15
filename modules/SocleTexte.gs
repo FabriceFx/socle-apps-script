@@ -9,7 +9,7 @@
  * Ce fichier se recopie tel quel. Il ne dépend d'aucun autre module du socle.
  */
 
-const SOCLE_TEXTE_VERSION_ = '0.13.0';
+const SOCLE_TEXTE_VERSION_ = '0.13.1';
 
 /**
  * Les cinq remplacements, et pas trois.
